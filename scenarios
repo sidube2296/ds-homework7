@@ -1,0 +1,158 @@
+///////////////////////////////////////////
+//                                       //
+//    --Format to create a scenario--    //
+//                                       //
+//    scenario <name>                    //
+//    process <name> <instructionCount>  //
+//                                       //
+//           --Process sizes--           //
+//              SMALL 1-100              //
+//             MEDIUM 100-35             //
+//              LARGE 350+               //
+//                                       //
+///////////////////////////////////////////
+
+scenario Many small
+process nvmobptb.dll 80
+process cordiai.exe 26
+process vgafix.exe 17
+process nvwksDEU.dll 91
+process vgasysg.exe 14
+process up_il.cur 43
+process angsauz.exe 13
+process wait_l.cur 98
+process aero_ns.cur 20
+process nvmobrus.dll 11
+process nvdspara.dll 102
+process netvsta.h1s 20
+process ega80850.exe 15
+process nvst3CSY.dll 75
+process nv3dptg.dll 99
+process nvwksHEB.dll 90
+process busy_rl.cur 69
+process ripbsyn.H1S 18
+process beam_l.cur 25
+process nvst3ESM.dll 82
+process serf1257.exe 39
+
+scenario Many small after large
+process nv3dara.dll 633
+process ega80850.exe 18
+process nvmobrus.dll 20
+process serf1257.exe 39
+process beam_l.cur 41
+process netvsta.h1s 26
+
+scenario Many small before large
+process vgasysg.exe 14
+process vgafix.exe  17
+process nvst3ESM.dll 83
+process ega80850.exe 18
+process serf1257.exe 39
+process beam_l.cur 41
+process cordiai.exe 9
+process nvst3CSY.dll 75
+process nvmobrus.dll 20
+process nvdspara.dll 92
+process wait_l.cur 82
+process nvwksHEB.dll 80
+process ega80866.exe 581
+
+scenario Small mixed with medium
+process ega80850.exe 17
+process up_il.cur 27
+process fms_metadata.xml 193
+process simhei.dll 245
+process vgasysg.exe 20
+process nvmobrus.dll 19
+process angsauz.exe 15
+process nvdspara.dll 119
+process wait_l.cur 91
+process aero_ns.cur 12
+process nvmobptb.dll 86
+process nvcplita.dll 276
+process nvwksDEU.dll 109
+process vgafix.exe 13
+process netvsta.h1s 22
+process cordiai.exe 30
+
+scenario Few large
+process aero_nwse.cur 774
+process vga932.exe 737
+process aero_busy.ani 630
+
+scenario All mixed 1
+process nvst3CSY.dll 72
+process AxureHandwriting.otf 379
+process iismmc.dll 234
+process cordiai.exe 16
+process nvmobrus.dll 20
+process netvsta.h1s 44
+process nv3dptg.dll 96
+process nvst3ESM.dll 119
+process itprobasic.h1s 141
+process nvwksDEU.dll 116
+process angsauz.exe 17
+process up_il.cur 44
+process vgafix.exe 19
+process aero_busy.ani 506
+process NEUROPOL.dll 222
+process nvmobptb.dll 89
+process fms_metadata.xml 184
+process nvcplita.dll 296
+process busy_rl.cur 74
+process beam_l.cur 23
+process nvwksHEB.dll 97
+
+scenario All mixed 2
+process serf1257.exe 26
+process cordiai.exe 10
+process nvcplrus.dll 134
+process nvst3CSY.dll 67
+process ega80850.exe 18
+process vgasysg.exe 16
+process NEUROPOL.dll 199
+process Help_BestBet.H1K 257
+process constanz.dll 452
+process beam_l.cur 43
+process iismmc.dll 229
+process nvmobrus.dll 19
+process 8514sysg.exe 204
+process netvsta.h1s 37
+process wait_l.cur 106
+process nvmobptb.dll 83
+process aero_ns.cur 10
+process vgafix.exe 10
+process aero_move_l.cur 405
+process up_il.cur 31
+
+scenario All mixed 3
+process nvst3CSY.dll 60
+process AxureHandwriting.otf 275
+process nvst3ESM.dll 92
+process nvmobptb.dll 98
+process wait_l.cur 102
+process nvcplita.dll 274
+process aero_ns.cur 18
+process constanz.dll 473
+process angsauz.exe 13
+process nvwksHEB.dll 95
+process netvsta.h1s 33
+process CREDITVA.dll 455
+process itprobasic.h1s 111
+process upcii.dll 249
+process nvdspara.dll 92
+process nvcplrus.dll 135
+process blutooth.h1s 954
+process ega80850.exe 13
+process size4_m.cur 186
+process nv3dptg.dll 97
+process winmeetb.h1s 167
+process busy_rl.cur 72
+process catriel bold.dll 418
+process cordiai.exe 23
+process up_il.cur 27
+process ripbsyn.H1S 19
+process nvmobrus.dll 10
+process beam_l.cur 33
+process fms_metadata.xml 210
