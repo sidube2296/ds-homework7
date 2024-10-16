@@ -152,15 +152,44 @@ public class Process implements Cloneable{
 			// Invariant:
 			// 1. dummy is never null.
 			// TODO
+			if (dummy == null) return report("Dummy node is null.");
 			// 2. dummy's name is null and dummy's totalInstructions is 0
 			// TODO
+			if (dummy.name != null || dummy.totalInstructions != 0) {
+			    return report("Dummy node's name is not null or totalInstructions is not 0.");
+			}
 			// 3. The queue is correctly doubly-linked.  You only need to check that
 			//	  each process (including the dummy process) is the previous process of its next process
 			// TODO
+			Process current = dummy;
+			do {
+			    if (current.next == null || current.next.prev != current) {
+			        return report("Queue is not correctly doubly-linked.");
+			    }
+			    current = current.next;
+			} while (current != dummy);
+
 			// 4. There is no Process with null name and in the queue (except the dummy process)
 			// TODO
+			current = dummy.next;
+			while (current != dummy) {
+			    if (current.name == null) {
+			        return report("Found a process with a null name.");
+			    }
+			    current = current.next;
+			}
+
 			// 5. manyItems is number of non-dummy processes in queue
 			// TODO
+			int count = 0;
+			current = dummy.next;
+			while (current != dummy) {
+			    count++;
+			    current = current.next;
+			}
+			if (count != manyItems) {
+			    return report("manyItems does not match the number of real processes.");
+			}
 			// If no problems found, then return true:
 			return true;
 		}
@@ -289,13 +318,35 @@ public class Process implements Cloneable{
 				// Invariant for iterator:
 				// 1. Outer invariant holds
 				// TODO
+				if (!Queue.this.wellFormed()) {
+			        return false; // If the queue itself is not valid, the iterator is not valid.
+			    }
 				// Only check 2 and 3 if versions match...
+				if (myVersion != Queue.this.version) {
+			        return true; // Versions do not match, so we can't validate further, but it's not an error.
+			    }
 				// 2. cursor is never null
 				// TODO
+				if (cursor == null) {
+			        return report("Iterator's cursor is null.");
+			    }
 				// 3. cursor is in the list
 				// TODO
+				 Process current = Queue.this.dummy;
+				 boolean cursorInList = false;
+				 do {
+					 if (current == cursor) {
+						 cursorInList = true; 
+						 break;
+					 }
+					 current = current.next;
+				 } while (current != Queue.this.dummy);
 
-				return true;
+				 if (!cursorInList) {
+					 return report("Iterator's cursor is not in the queue.");
+				 }
+			    
+			    return true;
 			}
 
 			/** Instantiates a new iterator */
