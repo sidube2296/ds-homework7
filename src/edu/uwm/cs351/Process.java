@@ -365,6 +365,22 @@ public class Process implements Cloneable{
 
 			// TODO
 			
+			// Creating a new dummy node for the cloned queue
+		    copy.dummy = new Process();
+		    copy.dummy.next = copy.dummy.prev = copy.dummy;
+
+		    copy.manyItems =  copy.version = 0;
+
+		    if (this.dummy.next == this.dummy) {
+		        return copy;
+		    }
+
+		    // Cloning each process and adding it to the new queue
+		    for( Process current = this.dummy.next;current != this.dummy;current = current.next) {
+		    	Process clonedProcess = current.clone();
+		    	copy.offer(clonedProcess);
+		    }
+
 			assert wellFormed() : "invariant failed at end of clone()";
 			assert copy.wellFormed() : "invariant of result failed at end of clone()";
 			return copy;
