@@ -202,6 +202,12 @@ public class Process implements Cloneable{
 		 */
 		public Queue(){
 			// TODO
+		    dummy = new Process();   // Create the dummy node
+		    dummy.next = dummy;      // Point the dummy's next to itself
+		    dummy.prev = dummy;      // Point the dummy's prev to itself
+
+		    manyItems = 0;           // Initialize the item count to 0
+
 			assert wellFormed() : "invariant failed in constructor";
 		}
 
@@ -221,6 +227,23 @@ public class Process implements Cloneable{
 		public boolean offer(Process p) {
 			assert wellFormed() : "invariant failed at start of offer";
 			// TODO
+		    if (p == null) {
+		        throw new NullPointerException("Process cannot be null.");
+		    }
+
+		    if (p.next != null || p.prev != null) {
+		        throw new IllegalArgumentException("Process is already part of another queue.");
+		    }
+
+		    //Just before the dummy node inserting the process at the end of the queue 
+		    Process tail = dummy.prev;
+		    p.prev = dummy.prev;
+		    p.next = dummy;
+		    dummy.prev.next = p;
+		    dummy.prev = p;
+		    manyItems++;
+		    version++;
+
 			assert wellFormed() : "invariant failed at end of offer";
 			return true;
 		}
@@ -246,7 +269,11 @@ public class Process implements Cloneable{
 		public Process peek(){
 			assert wellFormed() : "invariant failed at start of peek";
 			// TODO
-		    return null;
+		    if (dummy.next == dummy) {
+		        return null;
+		    }
+
+		    return dummy.next;
 		}
 
 		/** Removes and returns the process at the start of this queue, null if empty.
@@ -260,6 +287,21 @@ public class Process implements Cloneable{
 			assert wellFormed() : "invariant failed at start of poll";
 			Process result = null;
 			// TODO
+		    if (dummy.next == dummy) {
+		        return result;
+		    }
+
+		    result = dummy.next;
+
+		    dummy.next = result.next;
+		    result.next.prev = dummy;
+		    
+		    result.next = null;
+		    result.prev = null;
+		    
+		    manyItems--;
+		    version++;
+
 			assert wellFormed() : "invariant failed at end of poll";
 			return result;
 		}
@@ -274,7 +316,7 @@ public class Process implements Cloneable{
 		public int size() {
 			assert wellFormed() : "invariant of result failed at start of size()";
 			// TODO
-		    return 0;
+		    return manyItems;
 		}
 
 		/** Returns a new copy of this queue. The copy should be unaffected
