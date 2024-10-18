@@ -331,7 +331,32 @@ public class Process implements Cloneable{
 			assert wellFormed() : "invariant failed at end of poll";
 			return result;
 		}
+		
+		/**
+		 * Clears all the elements from the queue.
+		 * This method will break all the links between processes and reset the queue to its initial empty state.
+		 */
+		public void clear() {
+		    assert wellFormed() : "Invariant failed at start of clear()";
 
+			if (manyItems > 0) {
+				Process current = dummy.next;
+				dummy.next = dummy;
+				dummy.prev = dummy;
+
+				while (current != dummy) {
+					Process temp = current.next;
+					current.next = null;
+					current.prev = null;
+					current = temp;
+				}
+
+				manyItems = 0;
+				version++;
+			}	
+		    assert wellFormed() : "Invariant failed at end of clear()";
+		}
+		
 
 		/** Returns the number of non-dummy processes in this queue.
 		 * 
