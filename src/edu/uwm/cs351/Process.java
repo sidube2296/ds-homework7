@@ -256,6 +256,32 @@ public class Process implements Cloneable{
 		public void takeAll(Queue pq) {
 			assert wellFormed() : "invariant failed at start of takeAll";
 			// TODO
+		    if (this == pq) {
+		        return; // Same queue, nothing to do
+		    }
+
+		    if (pq.dummy.next == pq.dummy) {
+		        return;
+		    }
+
+		    Process last = this.dummy.prev;
+
+		    Process pqFirst = pq.dummy.next;
+		    Process pqLast = pq.dummy.prev;
+
+		    last.next = pqFirst;
+		    pqFirst.prev = last;
+
+		    pqLast.next = this.dummy;
+		    this.dummy.prev = pqLast;
+		    this.manyItems += pq.manyItems; 
+		   
+		    pq.dummy.next = pq.dummy;
+		    pq.dummy.prev = pq.dummy;
+		    pq.manyItems = 0;   
+		    this.version++;
+		    pq.version++;
+
 			assert wellFormed() : "invariant failed at end of takeAll";
 			assert pq.wellFormed() : "parameter queue invariant failed at end of takeAll";
 		}
@@ -338,6 +364,7 @@ public class Process implements Cloneable{
 			}
 
 			// TODO
+			
 			assert wellFormed() : "invariant failed at end of clone()";
 			assert copy.wellFormed() : "invariant of result failed at end of clone()";
 			return copy;
