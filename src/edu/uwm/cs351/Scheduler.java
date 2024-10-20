@@ -58,5 +58,15 @@ public class Scheduler{
 	 */
 	public void step(){
 		// TODO
+		if (isDone()) throw new NullPointerException("There are no processes left to schedule.");
+	    if (!cpu.hasProcess() && !ready.isEmpty()) 
+	        cpu.load(ready.poll());
+	    if (cpu.hasProcess()) {
+	        cpu.step(); 
+	        if (cpu.getProcess().isDone())
+	            done.offer(cpu.unload());
+	        else if (roundRobin)
+	            ready.offer(cpu.unload());
+	    }
 	}
 }
