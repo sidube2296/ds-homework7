@@ -212,13 +212,8 @@ public class Process implements Cloneable{
 		public boolean offer(Process p) {
 			assert wellFormed() : "invariant failed at start of offer";
 			// TODO
-		    if (p == null) {
-		        throw new NullPointerException("Process cannot be null.");
-		    }
-
-		    if (p.next != null || p.prev != null) {
-		        throw new IllegalArgumentException("Process is already in another queue.");
-		    }
+		    if (p == null) throw new NullPointerException("Process cannot be null.");
+		    if (p.next != null || p.prev != null) throw new IllegalArgumentException("Process is already in another queue.");
 
 		    p.prev = dummy.prev;
 		    p.next = dummy;
@@ -238,9 +233,8 @@ public class Process implements Cloneable{
 		public void takeAll(Queue pq) {
 			assert wellFormed() : "invariant failed at start of takeAll";
 			// TODO
-		    if (this == pq || pq.dummy.next == pq.dummy) {
+		    if (this == pq || pq.dummy.next == pq.dummy)	
 		        return;
-		    }
 		    
 		    this.dummy.prev.next = pq.dummy.next;
 		    pq.dummy.next.prev = this.dummy.prev;
@@ -356,7 +350,7 @@ public class Process implements Cloneable{
 			}
 
 			// TODO
-			// Creatingnew dummy node for the entire cloned queue
+			// Creating new dummy node for the entire cloned queue
 		    copy.dummy = new Process();
 		    copy.dummy.next = copy.dummy.prev = copy.dummy;
 		    copy.manyItems = copy.version = 0;
@@ -431,7 +425,8 @@ public class Process implements Cloneable{
 			public boolean hasNext() {
 				assert wellFormed() : "invariant failed at start of hasNext()";
 				// TODO
-			    return false;
+				if (myVersion != Queue.this.version) throw new ConcurrentModificationException("Iterator's version does not match.");   
+			    return cursor != Queue.this.dummy;
 			}
 
 			/** Returns the next process in this queue. This method should
@@ -443,8 +438,11 @@ public class Process implements Cloneable{
 			public Process next() {
 				assert wellFormed() : "invariant failed at start of next()";
 				// TODO
+				Process result = cursor;
+				if (!hasNext())throw new NoSuchElementException("No more elements in the queue.");
+			    cursor = cursor.next;
 				assert wellFormed() : "invariant failed at end of next()";
-			    return null;
+			    return result;
 			}
 		}
 
