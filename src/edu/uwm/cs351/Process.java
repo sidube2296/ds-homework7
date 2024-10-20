@@ -152,41 +152,28 @@ public class Process implements Cloneable{
 			// Invariant:
 			// 1. dummy is never null.
 			// TODO
-			if (dummy == null) return report("Dummy node is null.");
+			if (dummy==null) return report("Dummy node is null.");
 			// 2. dummy's name is null and dummy's totalInstructions is 0
 			// TODO
-			if (dummy.name != null || dummy.totalInstructions != 0) {
-			    return report("Dummy node's name is not null or totalInstructions is not 0.");
-			}
-			// 3. The queue is correctly doubly-linked.  You only need to check that
-			//	  each process (including the dummy process) is the previous process of its next process
-			// TODO
+			if (dummy.name!=null || dummy.totalInstructions!=0) return report("Dummy node's name is not null or totalInstructions is not 0.");
+
 			Process current = dummy;
+			int count = 0;
 			do {
-			    if (current.next == null || current.next.prev != current) {
-			        return report("Queue is not correctly doubly-linked.");
-			    }
+				// 3. The queue is correctly doubly-linked.  You only need to check that
+				//	  each process (including the dummy process) is the previous process of its next process
+				// TODO
+			    if (current.next == null || current.next.prev != current) return report("Queue is not correctly doubly-linked.");
 			    current = current.next;
+			    // 4. There is no Process with null name and in the queue (except the dummy process)
+				// TODO
+			    if (current != dummy) {
+			        if (current.name == null) return report("Found a process with a null name.");
+			        count++;
+			    }
 			} while (current != dummy);
-
-			// 4. There is no Process with null name and in the queue (except the dummy process)
-			// TODO
-			current = dummy.next;
-			while (current != dummy) {
-			    if (current.name == null) {
-			        return report("Found a process with a null name.");
-			    }
-			    current = current.next;
-			}
-
 			// 5. manyItems is number of non-dummy processes in queue
 			// TODO
-			int count = 0;
-			current = dummy.next;
-			while (current != dummy) {
-			    count++;
-			    current = current.next;
-			}
 			if (count != manyItems) {
 			    return report("manyItems does not match the number of real processes.");
 			}
@@ -202,11 +189,9 @@ public class Process implements Cloneable{
 		 */
 		public Queue(){
 			// TODO
-		    dummy = new Process();   // Create the dummy node
-		    dummy.next = dummy;      // Point the dummy's next to itself
-		    dummy.prev = dummy;      // Point the dummy's prev to itself
-
-		    manyItems = 0;           // Initialize the item count to 0
+		    dummy = new Process();   
+		    dummy.next = dummy.prev = dummy; 
+		    manyItems = 0; 
 
 			assert wellFormed() : "invariant failed in constructor";
 		}
@@ -232,15 +217,12 @@ public class Process implements Cloneable{
 		    }
 
 		    if (p.next != null || p.prev != null) {
-		        throw new IllegalArgumentException("Process is already part of another queue.");
+		        throw new IllegalArgumentException("Process is already in another queue.");
 		    }
 
-		    //Just before the dummy node inserting the process at the end of the queue 
-		    Process tail = dummy.prev;
 		    p.prev = dummy.prev;
 		    p.next = dummy;
-		    dummy.prev.next = p;
-		    dummy.prev = p;
+		    dummy.prev.next = dummy.prev= p;
 		    manyItems++;
 		    version++;
 
@@ -256,30 +238,21 @@ public class Process implements Cloneable{
 		public void takeAll(Queue pq) {
 			assert wellFormed() : "invariant failed at start of takeAll";
 			// TODO
-		    if (this == pq) {
-		        return; // Same queue, nothing to do
-		    }
-
-		    if (pq.dummy.next == pq.dummy) {
+		    if (this == pq || pq.dummy.next == pq.dummy) {
 		        return;
 		    }
+		    
+		    this.dummy.prev.next = pq.dummy.next;
+		    pq.dummy.next.prev = this.dummy.prev;
 
-		    Process last = this.dummy.prev;
+		    this.dummy.prev = pq.dummy.prev;
+		    pq.dummy.prev.next = this.dummy;
 
-		    Process pqFirst = pq.dummy.next;
-		    Process pqLast = pq.dummy.prev;
-
-		    last.next = pqFirst;
-		    pqFirst.prev = last;
-
-		    pqLast.next = this.dummy;
-		    this.dummy.prev = pqLast;
-		    this.manyItems += pq.manyItems; 
-		   
-		    pq.dummy.next = pq.dummy;
-		    pq.dummy.prev = pq.dummy;
-		    pq.manyItems = 0;   
-		    this.version++;
+		    this.manyItems += pq.manyItems;
+		    
+		    pq.manyItems = 0;
+		    pq.dummy.next = pq.dummy.prev = pq.dummy;
+		    version++;
 		    pq.version++;
 
 			assert wellFormed() : "invariant failed at end of takeAll";
@@ -295,7 +268,7 @@ public class Process implements Cloneable{
 		public Process peek(){
 			assert wellFormed() : "invariant failed at start of peek";
 			// TODO
-		    if (dummy.next == dummy) {
+		    if (dummy == dummy.next) {
 		        return null;
 		    }
 
@@ -313,18 +286,15 @@ public class Process implements Cloneable{
 			assert wellFormed() : "invariant failed at start of poll";
 			Process result = null;
 			// TODO
-		    if (dummy.next == dummy) {
+		    if (dummy == dummy.next) {
 		        return result;
 		    }
 
 		    result = dummy.next;
-
 		    dummy.next = result.next;
 		    result.next.prev = dummy;
 		    
-		    result.next = null;
-		    result.prev = null;
-		    
+		    result.next = result.prev = null;
 		    manyItems--;
 		    version++;
 
@@ -338,22 +308,19 @@ public class Process implements Cloneable{
 		 */
 		public void clear() {
 		    assert wellFormed() : "Invariant failed at start of clear()";
-
-			if (manyItems > 0) {
-				Process current = dummy.next;
-				dummy.next = dummy;
-				dummy.prev = dummy;
-
-				while (current != dummy) {
-					Process temp = current.next;
-					current.next = null;
-					current.prev = null;
-					current = temp;
-				}
-
-				manyItems = 0;
-				version++;
-			}	
+		    
+		    if (manyItems > 0) {
+		    	for(Process current = dummy.next; current != dummy;) {
+			        Process temp = current.next;
+			        current.next = current.prev = null;
+			        current = temp;
+		    	}
+		    
+			    dummy.next = dummy.prev = dummy;
+			    manyItems = 0;
+			    version++;
+		    }
+		    
 		    assert wellFormed() : "Invariant failed at end of clear()";
 		}
 		
@@ -389,19 +356,13 @@ public class Process implements Cloneable{
 			}
 
 			// TODO
-			
-			// Creating a new dummy node for the cloned queue
+			// Creatingnew dummy node for the entire cloned queue
 		    copy.dummy = new Process();
 		    copy.dummy.next = copy.dummy.prev = copy.dummy;
+		    copy.manyItems = copy.version = 0;
 
-		    copy.manyItems =  copy.version = 0;
-
-		    if (this.dummy.next == this.dummy) {
-		        return copy;
-		    }
-
-		    // Cloning each process and adding it to the new queue
-		    for( Process current = this.dummy.next;current != this.dummy;current = current.next) {
+		    // Cloning process each time and adding it to the new queue
+		    for(Process current=this.dummy.next; current!=this.dummy ; current=current.next) {
 		    	Process clonedProcess = current.clone();
 		    	copy.offer(clonedProcess);
 		    }
@@ -428,13 +389,11 @@ public class Process implements Cloneable{
 				// Invariant for iterator:
 				// 1. Outer invariant holds
 				// TODO
-				if (!Queue.this.wellFormed()) {
-			        return false; // If the queue itself is not valid, the iterator is not valid.
-			    }
+				if (!Queue.this.wellFormed()) 
+			        return false;			    
 				// Only check 2 and 3 if versions match...
-				if (myVersion != Queue.this.version) {
-			        return true; // Versions do not match, so we can't validate further, but it's not an error.
-			    }
+				if (myVersion != Queue.this.version)
+			        return true;
 				// 2. cursor is never null
 				// TODO
 				if (cursor == null) {
@@ -443,18 +402,13 @@ public class Process implements Cloneable{
 				// 3. cursor is in the list
 				// TODO
 				 Process current = Queue.this.dummy;
-				 boolean cursorInList = false;
 				 do {
-					 if (current == cursor) {
-						 cursorInList = true; 
-						 break;
-					 }
-					 current = current.next;
-				 } while (current != Queue.this.dummy);
+					    if (current == cursor)
+					        break;
+					    current = current.next;
+					} while (current != Queue.this.dummy);
 
-				 if (!cursorInList) {
-					 return report("Iterator's cursor is not in the queue.");
-				 }
+					if (current == Queue.this.dummy && cursor != Queue.this.dummy) return report("Iterator's cursor is not in the queue.");
 			    
 			    return true;
 			}
@@ -462,6 +416,8 @@ public class Process implements Cloneable{
 			/** Instantiates a new iterator */
 			public MyIterator(){
 				// TODO
+				cursor = Queue.this.dummy.next;
+			    myVersion = Queue.this.version;
 			}
 
 			// do not change this - used for JUnit tests
