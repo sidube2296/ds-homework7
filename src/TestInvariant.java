@@ -352,7 +352,21 @@ public class TestInvariant extends TestCase {
 		dummy.setPrev(x);
 		assertWellformed(true, list);
 	}
-
+	
+	 public void testD7() {  
+	     list = spy.newInstance(dummy, 3, 0);  
+	     Spy.DebugProcess d2 = new Spy.DebugProcess();  
+	     dummy.setNext(p3);  
+	     p3.setNext(d2);  
+	     d2.setNext(p1);  
+	     p1.setNext(dummy);  
+	     dummy.setPrev(p1);  
+	     p1.setPrev(d2);  
+	     d2.setPrev(p3);  
+	     p3.setPrev(dummy);  
+	     assertWellformed(false, list);  
+	 }
+	 
 	protected ArrayList<Spy.DebugProcess> processes;
 	
 	public void testE0() {
