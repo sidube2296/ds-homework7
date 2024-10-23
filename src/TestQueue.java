@@ -320,6 +320,13 @@ public class TestQueue extends TestCollection<Process> {
 		assertNull(clone.poll());
 	}
 	
+	private class Queue extends Process.Queue { }
+	public void test76() {
+		Queue q = new Queue();
+		q.offer(p1);
+		Process.Queue pq = q.clone();
+		assertTrue("clone() didn't use super.clone()", pq instanceof Queue);
+	}
 
 	/// test8x (x > 4): tests of clear()
 	
